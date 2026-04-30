@@ -19,8 +19,16 @@ CREATE TABLE IF NOT EXISTS operaciones (
     no_cliente INT NOT NULL,
     vendedor VARCHAR(100) NOT NULL,
     ingreso_operacion DECIMAL(15,2) NOT NULL,
-    tipo_cliente INT NOT NULL
-);
+    tipo_cliente INT NOT NULL,
+
+    INDEX idx_operaciones_fecha_operacion (fecha_operacion),
+    INDEX idx_operaciones_vendedor (vendedor),
+    INDEX idx_operaciones_no_cliente (no_cliente),
+    INDEX idx_operaciones_tipo_cliente (tipo_cliente)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
 
 -- ============================================================
 -- Table: vendedor_region
@@ -33,8 +41,15 @@ CREATE TABLE IF NOT EXISTS vendedor_region (
     nombre_original VARCHAR(150) NOT NULL,
     vendedor VARCHAR(100) NOT NULL,
     ciudad VARCHAR(100) NOT NULL,
-    region VARCHAR(100) NOT NULL
-);
+    region VARCHAR(100) NOT NULL,
+
+    UNIQUE KEY uq_vendedor_region_vendedor (vendedor),
+    INDEX idx_vendedor_region_ciudad (ciudad),
+    INDEX idx_vendedor_region_region (region)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
 
 -- ============================================================
 -- Table: presupuesto
@@ -46,5 +61,10 @@ CREATE TABLE IF NOT EXISTS presupuesto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     vendedor_original VARCHAR(150) NOT NULL,
     vendedor VARCHAR(100) NOT NULL,
-    presupuesto DECIMAL(15,2) NOT NULL
-);
+    presupuesto DECIMAL(15,2) NOT NULL,
+
+    UNIQUE KEY uq_presupuesto_vendedor (vendedor),
+    INDEX idx_presupuesto_presupuesto (presupuesto)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
