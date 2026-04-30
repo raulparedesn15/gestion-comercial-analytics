@@ -384,3 +384,105 @@ LEFT JOIN vendedor_region vr
 LEFT JOIN presupuesto p
     ON o.vendedor = p.vendedor
 LIMIT 20;
+
+-- ============================================================
+-- 24. Validate created SQL views
+-- Description:
+-- This query lists all views created in the project database.
+-- Expected views:
+-- vw_ventas_enriquecidas
+-- vw_resumen_mensual
+-- vw_resumen_vendedor
+-- vw_resumen_region
+-- vw_resumen_ciudad
+-- ============================================================
+
+SHOW FULL TABLES
+WHERE Table_type = 'VIEW';
+
+
+-- ============================================================
+-- 25. Preview enriched sales view
+-- Description:
+-- This query previews the main enriched analytical view.
+-- This view joins operations, seller-region, and budget data.
+-- ============================================================
+
+SELECT *
+FROM vw_ventas_enriquecidas
+LIMIT 20;
+
+
+-- ============================================================
+-- 26. Validate total records in enriched sales view
+-- Description:
+-- This query validates that the enriched view preserves all
+-- operation records from the operations table.
+-- Expected result:
+-- 999 records.
+-- ============================================================
+
+SELECT COUNT(*) AS total_records
+FROM vw_ventas_enriquecidas;
+
+
+-- ============================================================
+-- 27. Validate unmatched seller-region and budget records
+-- Description:
+-- This query checks whether any operation record is missing
+-- seller-region or budget information after the joins.
+-- Expected result:
+-- operaciones_sin_region = 0
+-- operaciones_sin_presupuesto = 0
+-- ============================================================
+
+SELECT
+    SUM(CASE WHEN tiene_region_asignada = 0 THEN 1 ELSE 0 END) AS operaciones_sin_region,
+    SUM(CASE WHEN tiene_presupuesto_asignado = 0 THEN 1 ELSE 0 END) AS operaciones_sin_presupuesto
+FROM vw_ventas_enriquecidas;
+
+
+-- ============================================================
+-- 28. Validate monthly summary view
+-- Description:
+-- This query previews the monthly summary view used for trend
+-- analysis in Python reports and Power BI dashboards.
+-- ============================================================
+
+SELECT *
+FROM vw_resumen_mensual
+ORDER BY mes_periodo;
+
+
+-- ============================================================
+-- 29. Validate seller summary view
+-- Description:
+-- This query previews seller-level commercial performance,
+-- including income, operations, clients, budget, and completion.
+-- ============================================================
+
+SELECT *
+FROM vw_resumen_vendedor
+ORDER BY ingreso_total DESC;
+
+
+-- ============================================================
+-- 30. Validate regional summary view
+-- Description:
+-- This query previews commercial performance by region.
+-- ============================================================
+
+SELECT *
+FROM vw_resumen_region
+ORDER BY ingreso_total DESC;
+
+
+-- ============================================================
+-- 31. Validate city summary view
+-- Description:
+-- This query previews commercial performance by city.
+-- ============================================================
+
+SELECT *
+FROM vw_resumen_ciudad
+ORDER BY ingreso_total DESC;
